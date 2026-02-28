@@ -1,0 +1,26 @@
+version: '3.8'
+
+# Defines the network for the services to communicate internally
+networks:
+  java_net:
+    driver: bridge
+
+
+services:
+  openjdk-service:
+    image: openjdk:25-ea-jdk-slim-bullseye
+
+    container_name: openjdk-service
+    hostname: openjdk-service
+
+    working_dir: /app
+    volumes:
+      - .:/app
+
+    stdin_open: true # Corresponds to -i
+    tty: true        # Corresponds to -t
+
+    networks:
+      - java_net
+
+

@@ -55,3 +55,4 @@ __pycache__/
 .env
 .venv
 postgres-data
+*.class
