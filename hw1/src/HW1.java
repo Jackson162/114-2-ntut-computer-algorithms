@@ -269,54 +269,55 @@ class Battle { // represents a battle game
     }
   }
   // */
-  /*
-   * 4.2
-   * boolean oneRound() {
-   * if (this.player1.cards.isEmpty() || this.player2.cards.isEmpty()) {
-   * return false;
-   * }
-   * 
-   * var p1Starts = this.turn;
-   * this.turn = !this.turn;
-   * 
-   * int c1, c2;
-   * 
-   * if (p1Starts) {
-   * c1 = this.trick.pick(this.player1);
-   * c2 = this.trick.pick(this.player2);
-   * } else {
-   * c2 = this.trick.pick(this.player2);
-   * c1 = this.trick.pick(this.player1);
-   * }
-   * 
-   * if (c1 > c2) {
-   * this.player1.pickAll(this.trick);
-   * return true;
-   * } else if (c2 > c1) {
-   * this.player2.pickAll(this.trick);
-   * return true;
-   * } else {
-   * if (this.player1.cards.isEmpty() || this.player2.cards.isEmpty()) {
-   * return false;
-   * }
-   * 
-   * var tieStarts = this.turn;
-   * this.turn = !this.turn;
-   * 
-   * if (tieStarts) {
-   * this.trick.pick(this.player1);
-   * this.trick.pick(this.player2);
-   * } else {
-   * this.trick.pick(this.player2);
-   * this.trick.pick(this.player1);
-   * }
-   * 
-   * return this.oneRound();
-   * }
-   * }
-   * 
-   * //
-   */
+
+  // question 4.2
+
+  // boolean oneRound() {
+  // if (this.player1.cards.isEmpty() || this.player2.cards.isEmpty()) {
+  // return false;
+  // }
+
+  // var p1Starts = this.turn;
+  // this.turn = !this.turn;
+
+  // int c1, c2;
+
+  // if (p1Starts) {
+  // c1 = this.trick.pick(this.player1);
+  // c2 = this.trick.pick(this.player2);
+  // } else {
+  // c2 = this.trick.pick(this.player2);
+  // c1 = this.trick.pick(this.player1);
+  // }
+
+  // if (c1 > c2) {
+  // this.player1.pickAll(this.trick);
+  // return true;
+  // } else if (c2 > c1) {
+  // this.player2.pickAll(this.trick);
+  // return true;
+  // } else {
+  // if (this.player1.cards.isEmpty() || this.player2.cards.isEmpty()) {
+  // return false;
+  // }
+
+  // var tieStarts = this.turn;
+  // this.turn = !this.turn;
+
+  // if (tieStarts) {
+  // this.trick.pick(this.player1);
+  // this.trick.pick(this.player2);
+  // } else {
+  // this.trick.pick(this.player2);
+  // this.trick.pick(this.player1);
+  // }
+
+  // return this.oneRound();
+  // }
+  // }
+
+  //
+
   // Question 3.3
 
   // returns the winner
