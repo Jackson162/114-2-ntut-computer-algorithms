@@ -141,16 +141,49 @@ class CountConfigurationsNaive {  // counting of stable configurations
 	// returning the number of grids whose first lines are r1 and r2,
 	// whose lines are lines of rows and whose height is height
 	static long count(Row r1, Row r2, LinkedList<Row> rows, int height) {
-		throw new Error(
-				"method count(Row r1, Row r2, LinkedList<Row> rows, int height) of the class CountConfigurationsHashNaive to be completed (Question 2)");
+    if (height <= 1) {
+      return 0L;
+    } else if (height == 2) {
+      return 1L;
+    }
 
+    long _count = 0L;
+
+    for (Row row: rows) {
+      if (row.areStackable(r1, r2)) {
+        _count += count(r2, row, rows, height -1);
+      }
+    }
+
+    return _count;
 	}
 
 	// returning the number of grids with n lines and n columns
 	static long count(int n) {
-		throw new Error("method count(int n) of the class CountConfigurationsHashNaive to be completed (Question 2)");
+    if (n == 0) return 1;
+    if (n == 1) return 2;
+
+    var rows = Row.allStableRows(n);
+
+		var outer_rows = rows.iterator();
+
+    long _count = 0L;
+    
+    while (outer_rows.hasNext()) {
+      var r1 = outer_rows.next();
+
+      var inner_rows = rows.iterator();
+
+      while (inner_rows.hasNext()) {
+        var r2 = inner_rows.next();
+        _count += count(r1, r2, rows, n);
+      }
+    }
+
+    return _count;
 	}
 }
+
 
 // Construction and use of a hash table
 
