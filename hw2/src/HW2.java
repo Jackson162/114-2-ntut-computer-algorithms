@@ -316,7 +316,15 @@ class CountConfigurationsHashTable { // counting of stable configurations using 
 //Use of HashMap
 
 class Triple { // triplet (r1, r2, height)
-	// to be completed
+	Row r1;
+  Row r2;
+  int height;
+
+  Triple (Row r1, Row r2, int height) {
+    this.r1 = r1;
+    this.r2 = r2;
+    this.height = height;
+  }
 }
 
 class CountConfigurationsHashMap { // counting of stable configurations using the HashMap of java
@@ -328,12 +336,50 @@ class CountConfigurationsHashMap { // counting of stable configurations using th
 	// whose lines are lines of rows and whose height is height
 	// using the HashMap of java
 	static long count(Row r1, Row r2, LinkedList<Row> rows, int height) {
-		throw new Error(
-				"method count(Row r1, Row r2, LinkedList<Row> rows, int height) of the class CountConfigurationsHashMap to be completed (Question 5)");
+    if (height <= 1) {
+        return 0L;
+      } else if (height == 2) {
+        return 1L;
+      }
+
+      long _count = 0L;
+
+      for (Row row: rows) {
+        if (row.areStackable(r1, r2)) {
+          var memo_count = memo.get(new Triple(r2, row, height - 1));
+          if (memo_count != null) {
+            _count += memo_count;
+          } else {
+            _count += count(r2, row, rows, height - 1);
+          }
+        }
+      }
+      
+      memo.put(new Triple(r1, r2, height), _count);
+      return _count;
 	}
 
 	// return the number of grids with n lines and n columns
 	static long count(int n) {
-		throw new Error("method count(int n) of the class CountConfigurationsHashMap to be completed (Question 5)");
-	}
+if (n == 0) return 1;
+    if (n == 1) return 2;
+
+    var rows = Row.allStableRows(n);
+
+		var outer_rows = rows.iterator();
+
+    long _count = 0L;
+    
+    while (outer_rows.hasNext()) {
+      var r1 = outer_rows.next();
+
+      var inner_rows = rows.iterator();
+
+      while (inner_rows.hasNext()) {
+        var r2 = inner_rows.next();
+        _count += count(r1, r2, rows, n);
+      }
+    }
+    return _count;		
+  }
 }
