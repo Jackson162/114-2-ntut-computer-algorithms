@@ -270,17 +270,15 @@ class CountConfigurationsHashTable { // counting of stable configurations using 
     } else if (height == 2) {
       return 1L;
     }
+    var memo_count = memo.find(r1, r2, height);
+    if (memo_count != null) return memo_count;
+
 
     long _count = 0L;
 
     for (Row row: rows) {
       if (row.areStackable(r1, r2)) {
-        var memo_count = memo.find(r2, row, height - 1);
-        if (memo_count != null) {
-          _count += memo_count;
-        } else {
-          _count += count(r2, row, rows, height - 1);
-        }
+        _count += count(r2, row, rows, height - 1);
       }
     }
     
@@ -356,17 +354,15 @@ class CountConfigurationsHashMap { // counting of stable configurations using th
       } else if (height == 2) {
         return 1L;
       }
+    var memo_count = memo.get(new Triple(r1, r2, height));
+    if (memo_count != null) return memo_count;
+
 
       long _count = 0L;
 
       for (Row row: rows) {
         if (row.areStackable(r1, r2)) {
-          var memo_count = memo.get(new Triple(r2, row, height - 1));
-          if (memo_count != null) {
-            _count += memo_count;
-          } else {
-            _count += count(r2, row, rows, height - 1);
-          }
+          _count += count(r2, row, rows, height - 1);
         }
       }
       
