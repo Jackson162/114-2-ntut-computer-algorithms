@@ -265,14 +265,52 @@ class CountConfigurationsHashTable { // counting of stable configurations using 
 	// whose lines are lines of rows and whose height is height
 	// using our hash table
 	static long count(Row r1, Row r2, LinkedList<Row> rows, int height) {
-		throw new Error(
-				"method count(Row r1, Row r2, LinkedList<Row> rows, int height) of the class CountConfigurationsHashTable to be completed (Question 4)");
+  if (height <= 1) {
+      return 0L;
+    } else if (height == 2) {
+      return 1L;
+    }
+
+    long _count = 0L;
+
+    for (Row row: rows) {
+      if (row.areStackable(r1, r2)) {
+        var memo_count = memo.find(r2, row, height - 1);
+        if (memo_count != null) {
+          _count += memo_count;
+        } else {
+          _count += count(r2, row, rows, height - 1);
+        }
+      }
+    }
+    
+    memo.add(r1, r2, height, _count);
+    return _count;
 	}
 
 	// return the number of grids with n lines and n columns
 	static long count(int n) {
-		throw new Error("method count(int n) of the class CountConfigurationsHashTable to be completed (Question 4)");
-	}
+  if (n == 0) return 1;
+    if (n == 1) return 2;
+
+    var rows = Row.allStableRows(n);
+
+		var outer_rows = rows.iterator();
+
+    long _count = 0L;
+    
+    while (outer_rows.hasNext()) {
+      var r1 = outer_rows.next();
+
+      var inner_rows = rows.iterator();
+
+      while (inner_rows.hasNext()) {
+        var r2 = inner_rows.next();
+        _count += count(r1, r2, rows, n);
+      }
+    }
+    return _count;	
+  }
 }
 
 //Use of HashMap
