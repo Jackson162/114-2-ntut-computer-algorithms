@@ -325,6 +325,21 @@ class Triple { // triplet (r1, r2, height)
     this.r2 = r2;
     this.height = height;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (!(o instanceof Triple)) {
+      return false;
+    } else {
+      var that = (Triple) o;
+      return that.r1 == this.r1 && that.r2 == this.r2 && that.height == this.height;
+    }
+  }
+
+  @Override
+  public int hashCode() {
+    return HashTable.hashCode(this.r1, this.r2, this.height);
+	}
 }
 
 class CountConfigurationsHashMap { // counting of stable configurations using the HashMap of java
