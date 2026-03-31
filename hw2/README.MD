@@ -8,5 +8,5 @@ docker exec -u 0 -it openjdk-service bash
 ```
 cd src
 javac *.java
-java -ea Test42
+java -ea Test5
 ```
