@@ -209,19 +209,25 @@ class HashTable { // hash table
 
 	// constructor
 	HashTable() {
-		throw new Error("Constructor HashTable() to be completed (Question 3.1)");
+		this.buckets = new Vector<LinkedList<Quadruple>>(M);
+    for (int i = 0; i < M; i++) {
+      this.buckets.add(new LinkedList<Quadruple>());
+    }
 	}
 
 	// Question 3.2
 
 	// return the hash code of the triplet (r1, r2, height)
 	static int hashCode(Row r1, Row r2, int height) {
-		throw new Error("method hashCode(Row r1, Row r2, int height) to be completed (Question 3.2)");
+    String hash = r1.hashCode() + "_" + r2.hashCode() + "_" + height;
+		int index = (hash.hashCode() & 0x7fffffff) % M;
+    return index;
 	}
 
 	// return the bucket of the triplet (r1, r2, height)
 	int bucket(Row r1, Row r2, int height) {
-		throw new Error("method bucket(Row r1, Row r2, int height) to be completed (Question 3.2)");
+		int index = hashCode(r1, r2, height);
+		return index;
 	}
 
 	// Question 3.3
@@ -229,14 +235,23 @@ class HashTable { // hash table
 	// add the quadruplet (r1, r2, height, result) in the bucket indicated by the
 	// method bucket
 	void add(Row r1, Row r2, int height, long result) {
-		throw new Error("method add(Row r1, Row r2, int height, long result) to be completed (Question 3.3)");
+    var index = this.bucket(r1, r2, height);
+    this.buckets.get(index).add(new Quadruple(r1, r2, height, result));
 	}
 
 	// Question 3.4
 
 	// search in the table an entry for the triplet (r1, r2, height)
 	Long find(Row r1, Row r2, int height) {
-		throw new Error("method Quadruple find(Row r1, Row r2, int height) to be completed (Question 3.4)");
+      var index = this.bucket(r1, r2, height);
+      var qs  = this.buckets.get(index);
+      for (var q: qs) {
+        if (q.r1.equals(r1) && q.r2.equals(r2) && q.height == height) {
+          return q.result;
+        }
+      }
+
+      return null;
 	}
 
 }
