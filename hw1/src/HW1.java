@@ -94,15 +94,20 @@ class Deck { // represents a pack of cards
 
   // checks if the current packet is valid
   boolean isValid(int nbVals) {
+    // check if the deck contains int outsides [1, nbVals]
+    // if there are no more than 4 cards for the same int
     if (nbVals <= 0)
       return false;
 
+    // index: 0 ~ nbVals
     var counts = new int[nbVals + 1];
 
+    // card is the int
     for (var card : this.cards) {
       if (card == null || card < 1 || card > nbVals) {
         return false;
       }
+      // increment and update/return, card 12 is added to index 12 of the arr
       if (++counts[card] > 4) {
         return false;
       }
@@ -348,16 +353,26 @@ class Battle { // represents a battle game
     var hare = this;
 
     while (true) {
+      // (2n+1)th turn for hare, true means the game is not over
+      // false means the game is over
       var h1 = hare.oneRound();
+
       if (!h1)
         return hare.winner();
 
+      // (2n)th turn for hare
       var h2 = hare.oneRound();
+
+      // (2n+1)th turn for tortoise
       var t1 = turtle.oneRound();
 
       if (!h2 || !t1)
         return hare.winner(); // 遊戲正常結束
 
+      // 現在 2 battles 當前的狀態是否一致
+      // 每一個 "state" of the player's deck in each turn 都像是在 linked-list 走一個 Node,
+      // 如果快慢撞在一起(狀態相同)
+      // 表示 linked list 有 loop 存在，在 battle 就是指遊戲不會停止（無限多回合）
       if (hare.toString().equals(turtle.toString())) {
         return 3; // 無限遊戲
       }
@@ -368,11 +383,14 @@ class Battle { // represents a battle game
 
   // performs statistics on the number of infinite games
   static void stats(int nbVals, int nbGames) {
+    // atomicInteger Prevents race-condition(lost update)
     var p1Wins = new AtomicInteger(0);
     var p2Wins = new AtomicInteger(0);
+    // 平手: call it a draw
     var draws = new AtomicInteger(0);
     var infinites = new AtomicInteger(0);
 
+    // virtual thread to achieve concurrency
     try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
       for (var i = 0; i < nbGames; i++) {
         executor.submit(() -> {
