@@ -25,14 +25,28 @@ public class Hex {
     NOONE, BLUE, RED
   }
 
+  private Player grid[][];
 
   // create an empty board of size n*n
   Hex(int n) {
+    // row(i) x col(j)
+    this.grid = new Player[n+2][n+2];
+    for (var i=0; i< n+2; i++) {
+      for (var j=0; j< n+2; j++) {
+        if (i == 0 || i == n+1) {
+          grid[i][j] = Player.RED;
+        } else if (j == 0 || i == n+1) {
+          grid[i][j] = Player.BLUE;
+        } else {
+          grid[i][j] = Player.NOONE;        
+        }
+      }
+    }
   }
 
   // return the color of cell i,j
   Player get(int i, int j) {
-    return Player.NOONE;
+    return this.grid[i][j];
   }
 
 
