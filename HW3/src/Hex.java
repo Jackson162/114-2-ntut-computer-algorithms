@@ -29,19 +29,20 @@ public class Hex {
 
   // create an empty board of size n*n
   Hex(int n) {
-    // row(i) x col(j)
+    // col(i) x row(j)
     this.grid = new Player[n+2][n+2];
     for (var i=0; i< n+2; i++) {
       for (var j=0; j< n+2; j++) {
-        if (i == 0 || i == n+1) {
-          grid[i][j] = Player.RED;
-        } else if (j == 0 || i == n+1) {
+        if ((i == 0 || i == n+1) && j != 0 && j != n+1) {
           grid[i][j] = Player.BLUE;
+        } else if ((j == 0 || j == n+1) && i != 0 && i != n+1) {
+          grid[i][j] = Player.RED;
         } else {
           grid[i][j] = Player.NOONE;        
         }
       }
     }
+
   }
 
   // return the color of cell i,j
