@@ -26,9 +26,13 @@ public class Hex {
   }
 
   private Player grid[][];
+  private Player cur_player;
+  private int playable_n;
 
   // create an empty board of size n*n
   Hex(int n) {
+    this.cur_player = Player.RED;
+    this.playable_n = n;
     // col(i) x row(j)
     this.grid = new Player[n+2][n+2];
     for (var i=0; i< n+2; i++) {
@@ -55,13 +59,19 @@ public class Hex {
   // Does nothing if the move is illegal.
   // Returns true if and only if the move is legal.
   boolean click(int i, int j) {
+    if (1 <= i && i <= playable_n && 1 <= j && j <= playable_n && grid[i][j] == Player.NOONE) {
+      this.grid[i][j] = this.cur_player;
+      this.cur_player = this.cur_player == Player.RED ? Player.BLUE : Player.RED;
+      return true;
+    }
+
     return false;
   }
 
   // return the player with the trait or Player.NOONE if the game is over
   // because of a player's victory.
   Player currentPlayer() {
-    return Player.NOONE;
+    return this.cur_player;
   }
 
 
