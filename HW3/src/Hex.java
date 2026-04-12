@@ -27,7 +27,9 @@ public class Hex {
 
   private Player grid[][];
   private Player cur_player;
-  private int playable_n;
+  private int playable_n; 
+  private int links[];
+  private int ranks[];
 
   // create an empty board of size n*n
   Hex(int n) {
@@ -59,7 +61,7 @@ public class Hex {
   // Does nothing if the move is illegal.
   // Returns true if and only if the move is legal.
   boolean click(int i, int j) {
-    if (1 <= i && i <= playable_n && 1 <= j && j <= playable_n && grid[i][j] == Player.NOONE) {
+    if (1 <= i && i <= this.playable_n && 1 <= j && j <= this.playable_n && grid[i][j] == Player.NOONE) {
       this.grid[i][j] = this.cur_player;
       this.cur_player = this.cur_player == Player.RED ? Player.BLUE : Player.RED;
       return true;
@@ -73,15 +75,51 @@ public class Hex {
   Player currentPlayer() {
     return this.cur_player;
   }
+  
+  int find(int label) {
+    var next = this.links[label];
+    if (label == next) return label;
 
+    var root = this.find(next);
+
+    // path compression
+    links[label] = root;
+
+    return root;
+  }
+
+  void union(int labeli, int labelj) {
+    var ri = this.find(labeli);
+    var rj = this.find(labelj);
+
+    if (this.ranks[ri] > this.ranks[rj]) {
+      this.links[rj] = ri;
+    } else if (this.ranks[ri] < this.ranks[rj]) {
+      this.links[ri] = rj;
+    } else {
+      this.links[rj] = ri;
+      this.rank[ri] += 1;
+    }
+
+  }
 
   // return the winning player, or Player.NOONE if no player has won yet
   Player winner() {
+    var links_size = (this.playable_n+2) * (this.playable_n+2);
+    this.links = new int[links_size];
+    this.ranks = new int[links_size];
+
+    for (var i = 0;i < links_size; i++) {
+      this.links[i] = i;
+      this.ranks[i] = 0;
+    }
+
+
     return Player.NOONE;
   }
 
   int label(int i, int j) {
-    return 0;
+    return i + (this.playable_n + 2) * j;
   }
 
 
