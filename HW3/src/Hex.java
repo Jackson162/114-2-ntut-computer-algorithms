@@ -18,6 +18,8 @@
                     i-1,j+1    i,j+1
 
 */
+import java.util.Vector;
+
 
 public class Hex {
 
@@ -30,6 +32,7 @@ public class Hex {
   private int playable_n; 
   private int links[];
   private int ranks[];
+  private record adj_link(int idi, int idj){};
 
   // create an empty board of size n*n
   Hex(int n) {
@@ -40,11 +43,11 @@ public class Hex {
     for (var i=0; i< n+2; i++) {
       for (var j=0; j< n+2; j++) {
         if ((i == 0 || i == n+1) && j != 0 && j != n+1) {
-          grid[i][j] = Player.BLUE;
+          grid[j][i] = Player.BLUE;
         } else if ((j == 0 || j == n+1) && i != 0 && i != n+1) {
-          grid[i][j] = Player.RED;
+          grid[j][i] = Player.RED;
         } else {
-          grid[i][j] = Player.NOONE;        
+          grid[j][i] = Player.NOONE;        
         }
       }
     }
@@ -53,7 +56,7 @@ public class Hex {
 
   // return the color of cell i,j
   Player get(int i, int j) {
-    return this.grid[i][j];
+    return this.grid[j][i];
   }
 
 
@@ -61,8 +64,8 @@ public class Hex {
   // Does nothing if the move is illegal.
   // Returns true if and only if the move is legal.
   boolean click(int i, int j) {
-    if (1 <= i && i <= this.playable_n && 1 <= j && j <= this.playable_n && grid[i][j] == Player.NOONE) {
-      this.grid[i][j] = this.cur_player;
+    if (1 <= i && i <= this.playable_n && 1 <= j && j <= this.playable_n && grid[j][i] == Player.NOONE) {
+      this.grid[j][i] = this.cur_player;
       this.cur_player = this.cur_player == Player.RED ? Player.BLUE : Player.RED;
       return true;
     }
@@ -76,21 +79,23 @@ public class Hex {
     return this.cur_player;
   }
   
-  int find(int label) {
-    var next = this.links[label];
-    if (label == next) return label;
+  int find(int id) {
+    var next = this.links[id];
+    if (id == next) return id;
 
     var root = this.find(next);
 
     // path compression
-    links[label] = root;
+    links[id] = root;
 
     return root;
   }
 
-  void union(int labeli, int labelj) {
-    var ri = this.find(labeli);
-    var rj = this.find(labelj);
+  void union(int idi, int idj) {
+    var ri = this.find(idi);
+    var rj = this.find(idj);
+
+    if (ri == rj) return;
 
     if (this.ranks[ri] > this.ranks[rj]) {
       this.links[rj] = ri;
@@ -98,7 +103,7 @@ public class Hex {
       this.links[ri] = rj;
     } else {
       this.links[rj] = ri;
-      this.rank[ri] += 1;
+      this.ranks[ri] += 1;
     }
 
   }
@@ -114,12 +119,44 @@ public class Hex {
       this.ranks[i] = 0;
     }
 
+    var adj_links = new Vector<adj_link>();
+
+    for (var i = 0; i < this.playable_n+2; i++) {
+      for (var j = 0; j < this.playable_n+2; j++) {
+        var cur = this.grid[j][i];
+        var cur_id = this.getID(i, j);
+        if (cur == Player.NOONE) continue;
+        // check right grid
+        if (i+1 < this.playable_n+2) {
+          if (cur == this.grid[j][i+1]) adj_links.add(new adj_link(cur_id, this.getID(i+1, j)));
+        }
+        
+        // check right down grid
+        if (j+1 < this.playable_n+2) {
+          if (cur == this.grid[j+1][i]) adj_links.add(new adj_link(cur_id, this.getID(i, j+1)));    
+        }
+      }
+    }
+
+    // skip randomization: check if there is a path after every union will get conclusion faster
+
+    for (var k =0; k < adj_links.size(); k++) {
+      var idi = adj_links.get(k).idi();
+      var idj = adj_links.get(k).idj();
+      union(idi, idj);
+    }
+
 
     return Player.NOONE;
   }
 
+  int getID(int i, int j) {
+    return i + (this.playable_n + 2) * j; 
+  }
+
   int label(int i, int j) {
-    return i + (this.playable_n + 2) * j;
+    int id = this.getID(i, j);
+    return this.find(id);
   }
 
 
